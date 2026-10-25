@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+  <defs>
+    <linearGradient id="grad-prov" x1="16" y1="16" x2="114" y2="112" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="45%" stop-color="#34d399"/>
+      <stop offset="100%" stop-color="#60a5fa"/>
+    </linearGradient>
+    <filter id="glow-prov" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <g filter="url(#glow-prov)" stroke="url(#grad-prov)" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Top Central Stack / Registry Core -->
+    <path d="M48 24 L64 16 L80 24 L64 32 Z" stroke-width="2.8" />
+    <path d="M48 30 L64 38 L80 30" stroke-width="2.8" />
+    <path d="M48 36 L64 44 L80 36" stroke-width="2.8" />
+
+    <!-- Left Code Module Plug -->
+    <path d="M22 36 H38 V58 H22 Z" stroke-width="2.6" />
+    <path d="M27 47 L30 44 L27 41" stroke-width="2.4" />
+    <path d="M33 47 L36 50" stroke-width="2" />
+
+    <!-- Right Integration Puzzle Node -->
+    <path d="M92 36 H106 V44 C102 44 102 49 106 49 V58 H92 V50 C95 50 95 44 92 44 Z" stroke-width="2.6" />
+
+    <!-- Center Security & Verified Provider Badge -->
+    <path d="M64 56 C74 56 82 59 82 68 C82 82 64 94 64 94 C64 94 46 82 46 68 C46 59 54 56 64 56 Z" stroke-width="3" />
+    <path d="M57 73 L62 78 L71 67" stroke-width="3" stroke="#34d399" />
+
+    <!-- Count Indicator '61' -->
+    <text x="88" y="88" font-family="'Inter', sans-serif" font-size="16" font-weight="800" fill="#38bdf8" stroke="none">61</text>
+  </g>
+</svg>

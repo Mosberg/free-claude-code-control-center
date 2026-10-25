@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+  <defs>
+    <linearGradient id="grad-msg" x1="16" y1="16" x2="114" y2="114" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#38bdf8"/>
+      <stop offset="50%" stop-color="#06b6d4"/>
+      <stop offset="100%" stop-color="#ec4899"/>
+    </linearGradient>
+    <filter id="glow-msg" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <g filter="url(#glow-msg)" stroke="url(#grad-msg)" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Chat Bubble -->
+    <path d="M26 28 H66 C71 28 75 32 75 37 V55 C75 60 71 64 66 64 H46 L34 74 V64 H26 C21 64 17 60 17 55 V37 C17 32 21 28 26 28 Z" stroke-width="3" />
+    <line x1="28" y1="41" x2="52" y2="41" stroke-width="3" />
+    <line x1="28" y1="50" x2="62" y2="50" stroke-width="3" />
+
+    <!-- Voice Audio Waveform Equalizer -->
+    <g stroke-width="3" stroke="#22d3ee">
+      <line x1="86" y1="40" x2="86" y2="52" />
+      <line x1="93" y1="32" x2="93" y2="60" />
+      <line x1="100" y1="26" x2="100" y2="66" stroke-width="3.5" stroke="#38bdf8" />
+      <line x1="107" y1="35" x2="107" y2="57" />
+      <line x1="114" y1="42" x2="114" y2="50" />
+    </g>
+
+    <!-- Phone Receiver with Cyber Radiance Waves -->
+    <path d="M64 73 C65 71 68 70 71 72 L79 78 C82 80 82 83 80 86 L76 90 C78 95 83 100 88 102 L92 98 C95 96 98 96 100 99 L106 107 C108 110 107 113 105 114 C97 121 78 112 65 99 C52 86 43 67 50 59 C51 57 54 56 57 58 L64 73 Z" stroke-width="3" />
+
+    <!-- Audio Broadcast Signal Waves -->
+    <path d="M96 72 C102 76 106 83 107 90" stroke-width="2.5" stroke="#ec4899" />
+    <path d="M104 64 C113 70 118 80 120 90" stroke-width="2.5" stroke="#ec4899" />
+  </g>
+</svg>

@@ -1,0 +1,815 @@
+{
+  "name": "free-claude-code-control-center",
+  "displayName": "Free Claude Code (FCC) Control Center",
+  "description": "Unofficial VS Code control center for Free Claude Code (FCC): start/stop the local proxy, open the Admin UI, launch all 10 coding agents, manage 61 providers, models, integrations, messaging, voice, updates and diagnostics.",
+  "version": "0.1.0",
+  "publisher": "mosberg",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mosberg/free-claude-code-control-center.git"
+  },
+  "icon": "media/fcc-icon.png",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": [
+    "AI",
+    "Other"
+  ],
+  "keywords": [
+    "free claude code",
+    "fcc",
+    "claude code",
+    "codex",
+    "proxy",
+    "nvidia nim",
+    "openrouter",
+    "ollama",
+    "lm studio"
+  ],
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "main": "./out/extension.js",
+  "capabilities": {
+    "untrustedWorkspaces": {
+      "supported": "limited",
+      "description": "Launching the server, agents and installers runs commands on your machine, so these are disabled in untrusted workspaces."
+    }
+  },
+  "contributes": {
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "fcc",
+          "title": "Free Claude Code",
+          "icon": "media/fcc-icon.svg"
+        }
+      ]
+    },
+    "views": {
+      "fcc": [
+        {
+          "id": "fcc.status",
+          "name": "Server",
+          "icon": "media/icon/server.svg"
+        },
+        {
+          "id": "fcc.agents",
+          "name": "Coding Agents",
+          "icon": "media/icon/agents.svg"
+        },
+        {
+          "id": "fcc.models",
+          "name": "Models",
+          "icon": "media/icon/models.svg"
+        },
+        {
+          "id": "fcc.providers",
+          "name": "Providers (61)",
+          "icon": "media/icon/providers.svg"
+        },
+        {
+          "id": "fcc.integrations",
+          "name": "Integrations",
+          "icon": "media/icon/integrations.svg"
+        },
+        {
+          "id": "fcc.messaging",
+          "name": "Messaging & Voice",
+          "icon": "media/icon/messaging.svg",
+          "visibility": "collapsed"
+        },
+        {
+          "id": "fcc.maintenance",
+          "name": "Install, Update & Help",
+          "icon": "media/icon/maintenance.svg",
+          "visibility": "collapsed"
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "fcc.status",
+        "when": "!fcc.cliFound",
+        "contents": "The `fcc-server` command was not found on your PATH.\n[Install Free Claude Code](command:fcc.install)\n[Open the FCC repository](command:fcc.openRepo)\nInstalled somewhere custom? Point the extension at it with the `fcc.server.command` setting.\n[Open Settings](command:fcc.openSettings)"
+      },
+      {
+        "view": "fcc.models",
+        "when": "fcc.serverState == stopped",
+        "contents": "The FCC server is not running, so no models can be listed.\n[Start Server](command:fcc.server.start)"
+      }
+    ],
+    "walkthroughs": [
+      {
+        "id": "fcc.getStarted",
+        "title": "Get started with Free Claude Code",
+        "description": "Install FCC, start the proxy, add a provider key in the Admin UI and launch your first coding agent.",
+        "steps": [
+          {
+            "id": "install",
+            "title": "Install FCC",
+            "description": "Runs the official FCC installer in a terminal after you confirm.\n[Install Free Claude Code](command:fcc.install)",
+            "media": {
+              "markdown": "media/walkthrough/1-install.md"
+            },
+            "completionEvents": [
+              "onCommand:fcc.install"
+            ]
+          },
+          {
+            "id": "start",
+            "title": "Start the FCC server",
+            "description": "Start the local proxy from VS Code (or from the desktop launcher / tray icon).\n[Start Server](command:fcc.server.start)",
+            "media": {
+              "markdown": "media/walkthrough/2-start.md"
+            },
+            "completionEvents": [
+              "onCommand:fcc.server.start"
+            ]
+          },
+          {
+            "id": "provider",
+            "title": "Add a provider key and pick a model",
+            "description": "Open the Admin UI, add a key (for example NVIDIA NIM), choose MODEL and click Apply.\n[Open Admin UI](command:fcc.server.openAdmin)",
+            "media": {
+              "markdown": "media/walkthrough/3-provider.md"
+            },
+            "completionEvents": [
+              "onCommand:fcc.server.openAdmin"
+            ]
+          },
+          {
+            "id": "agent",
+            "title": "Launch a coding agent",
+            "description": "Claude Code, Codex, Pi, OpenCode, Cline, Hermes, DeepSeek Harness, Grok Build, Muse Code or Aider.\n[Launch an Agent](command:fcc.agent.pick)",
+            "media": {
+              "markdown": "media/walkthrough/4-agent.md"
+            },
+            "completionEvents": [
+              "onCommand:fcc.agent.pick",
+              "onCommand:fcc.agent.launch"
+            ]
+          }
+        ]
+      }
+    ],
+    "commands": [
+      {
+        "command": "fcc.menu",
+        "title": "Show Menu",
+        "category": "FCC",
+        "icon": "$(zap)"
+      },
+      {
+        "command": "fcc.refresh",
+        "title": "Refresh All Views",
+        "category": "FCC",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "fcc.server.start",
+        "title": "Start Server",
+        "category": "FCC",
+        "icon": "$(play)"
+      },
+      {
+        "command": "fcc.server.stop",
+        "title": "Stop Server (started from VS Code)",
+        "category": "FCC",
+        "icon": "$(debug-stop)"
+      },
+      {
+        "command": "fcc.server.restart",
+        "title": "Restart Server",
+        "category": "FCC",
+        "icon": "$(debug-restart)"
+      },
+      {
+        "command": "fcc.server.startDesktop",
+        "title": "Start Desktop Launcher / Tray App (fcc-desktop)",
+        "category": "FCC"
+      },
+      {
+        "command": "fcc.server.openAdmin",
+        "title": "Open Admin UI",
+        "category": "FCC",
+        "icon": "$(settings-gear)"
+      },
+      {
+        "command": "fcc.server.showLogs",
+        "title": "Show Server Logs",
+        "category": "FCC",
+        "icon": "$(output)"
+      },
+      {
+        "command": "fcc.server.checkHealth",
+        "title": "Check Server Health",
+        "category": "FCC",
+        "icon": "$(pulse)"
+      },
+      {
+        "command": "fcc.server.copyUrl",
+        "title": "Copy Server URL",
+        "category": "FCC",
+        "icon": "$(copy)"
+      },
+      {
+        "command": "fcc.server.copyEnv",
+        "title": "Copy Environment Snippet for Another Client…",
+        "category": "FCC"
+      },
+      {
+        "command": "fcc.terminal.withEnv",
+        "title": "Open Terminal with FCC Environment",
+        "category": "FCC",
+        "icon": "$(terminal)"
+      },
+      {
+        "command": "fcc.agent.pick",
+        "title": "Launch Coding Agent…",
+        "category": "FCC",
+        "icon": "$(rocket)"
+      },
+      {
+        "command": "fcc.agent.launch",
+        "title": "Launch Coding Agent (internal)",
+        "category": "FCC"
+      },
+      {
+        "command": "fcc.agent.claude",
+        "title": "Launch Claude Code (fcc-claude)",
+        "category": "FCC"
+      },
+      {
+        "command": "fcc.agent.codex",
+        "title": "Launch Codex (fcc-codex)",
+        "category": "FCC"
+      },
+      {
+        "command": "fcc.agent.pi",
+        "title": "Launch Pi (fcc-pi)",
+        "category": "FCC"
+      },
+      {
+        "command": "fcc.agent.opencode",
+        "title": "Launch OpenCode 2 (fcc-opencode)",
+        "category": "FCC"
+      },
+      {
+        "command": "fcc.agent.cline",
+        "title": "Launch Cline (fcc-cline)",
+        "category": "FCC"
+      },
+      {
+        "command": "fcc.agent.hermes",
+        "title": "Launch Hermes (fcc-hermes)",
+        "category": "FCC"
+      },
+      {
+        "command": "fcc.agent.dsh",
+        "title": "Launch DeepSeek Harness Web (fcc-dsh)",
+        "category": "FCC"
+      },
+      {
+        "command": "fcc.agent.grok",
+        "title": "Launch Grok Build (fcc-grok)",
+        "category": "FCC"
+      },
+      {
+        "command": "fcc.agent.muse",
+        "title": "Launch Muse Code (fcc-muse)",
+        "category": "FCC"
+      },
+      {
+        "command": "fcc.agent.aider",
+        "title": "Launch Aider (fcc-aider)",
+        "category": "FCC"
+      },
+      {
+        "command": "fcc.models.refresh",
+        "title": "Refresh Models",
+        "category": "FCC",
+        "icon": "$(refresh)"
+      },
+      {
+        "command": "fcc.models.pick",
+        "title": "Browse Models Exposed by FCC…",
+        "category": "FCC",
+        "icon": "$(search)"
+      },
+      {
+        "command": "fcc.models.copy",
+        "title": "Copy Model ID",
+        "category": "FCC",
+        "icon": "$(copy)"
+      },
+      {
+        "command": "fcc.model.set",
+        "title": "Set MODEL (launch-time override)…",
+        "category": "FCC"
+      },
+      {
+        "command": "fcc.model.setTier",
+        "title": "Set Fable/Opus/Sonnet/Haiku Tier Model (launch-time override)…",
+        "category": "FCC"
+      },
+      {
+        "command": "fcc.provider.search",
+        "title": "Search Providers…",
+        "category": "FCC",
+        "icon": "$(search)"
+      },
+      {
+        "command": "fcc.provider.setCredential",
+        "title": "Store Provider Credential Securely…",
+        "category": "FCC",
+        "icon": "$(key)"
+      },
+      {
+        "command": "fcc.provider.clearCredential",
+        "title": "Remove Stored Provider Credential…",
+        "category": "FCC",
+        "icon": "$(trash)"
+      },
+      {
+        "command": "fcc.provider.openKeyPage",
+        "title": "Open Provider Key / Docs Page",
+        "category": "FCC",
+        "icon": "$(link-external)"
+      },
+      {
+        "command": "fcc.provider.copyModel",
+        "title": "Copy Example MODEL",
+        "category": "FCC",
+        "icon": "$(copy)"
+      },
+      {
+        "command": "fcc.secrets.clearAll",
+        "title": "Remove All Stored Credentials",
+        "category": "FCC"
+      },
+      {
+        "command": "fcc.token.set",
+        "title": "Set Proxy Auth Token…",
+        "category": "FCC",
+        "icon": "$(lock)"
+      },
+      {
+        "command": "fcc.token.generate",
+        "title": "Generate Random Proxy Auth Token",
+        "category": "FCC"
+      },
+      {
+        "command": "fcc.token.clear",
+        "title": "Clear Stored Proxy Auth Token",
+        "category": "FCC"
+      },
+      {
+        "command": "fcc.integration.connect",
+        "title": "Connect Integration (opens Admin UI → Integrations)",
+        "category": "FCC",
+        "icon": "$(plug)"
+      },
+      {
+        "command": "fcc.integration.installExtension",
+        "title": "Install Client Extension",
+        "category": "FCC",
+        "icon": "$(cloud-download)"
+      },
+      {
+        "command": "fcc.claudeCode.configure",
+        "title": "Point Claude Code for VS Code at FCC (settings)",
+        "category": "FCC"
+      },
+      {
+        "command": "fcc.claudeCode.unconfigure",
+        "title": "Remove FCC Settings from Claude Code for VS Code",
+        "category": "FCC"
+      },
+      {
+        "command": "fcc.messaging.guide",
+        "title": "Show Messaging Bot Guide…",
+        "category": "FCC"
+      },
+      {
+        "command": "fcc.messaging.commands",
+        "title": "Show Messaging Commands (/stats /stop /clear)",
+        "category": "FCC"
+      },
+      {
+        "command": "fcc.voice.guide",
+        "title": "Show Voice Notes Guide",
+        "category": "FCC"
+      },
+      {
+        "command": "fcc.voice.installLocal",
+        "title": "Install Local Whisper Voice Support…",
+        "category": "FCC"
+      },
+      {
+        "command": "fcc.guide.localProviders",
+        "title": "Show Local Provider Guide (LM Studio, llama.cpp, Ollama)",
+        "category": "FCC"
+      },
+      {
+        "command": "fcc.guide.routing",
+        "title": "Show Model Routing, Fallbacks & Reasoning Guide",
+        "category": "FCC"
+      },
+      {
+        "command": "fcc.guide.integrations",
+        "title": "Show Client Integration Guide",
+        "category": "FCC"
+      },
+      {
+        "command": "fcc.guide.providers",
+        "title": "Show Provider Catalog Table",
+        "category": "FCC"
+      },
+      {
+        "command": "fcc.provider.pick",
+        "title": "Provider Actions (internal)",
+        "category": "FCC"
+      },
+      {
+        "command": "fcc.walkthrough",
+        "title": "Open Getting-Started Walkthrough",
+        "category": "FCC"
+      },
+      {
+        "command": "fcc.install",
+        "title": "Install Free Claude Code…",
+        "category": "FCC",
+        "icon": "$(cloud-download)"
+      },
+      {
+        "command": "fcc.update",
+        "title": "Update Free Claude Code (fcc-update)",
+        "category": "FCC"
+      },
+      {
+        "command": "fcc.checkForUpdates",
+        "title": "Check for FCC Updates",
+        "category": "FCC"
+      },
+      {
+        "command": "fcc.uninstall",
+        "title": "Uninstall Free Claude Code…",
+        "category": "FCC"
+      },
+      {
+        "command": "fcc.doctor",
+        "title": "Run Diagnostics (fcc-doctor)",
+        "category": "FCC",
+        "icon": "$(heart)"
+      },
+      {
+        "command": "fcc.muse.install",
+        "title": "Install / Update Muse Code (native Windows)",
+        "category": "FCC"
+      },
+      {
+        "command": "fcc.muse.uninstall",
+        "title": "Remove Muse Code Installed by FCC (native Windows)",
+        "category": "FCC"
+      },
+      {
+        "command": "fcc.openRepo",
+        "title": "Open FCC Repository",
+        "category": "FCC",
+        "icon": "$(github)"
+      },
+      {
+        "command": "fcc.reportIssue",
+        "title": "Report an FCC Bug…",
+        "category": "FCC",
+        "icon": "$(bug)"
+      },
+      {
+        "command": "fcc.openSettings",
+        "title": "Open Extension Settings",
+        "category": "FCC",
+        "icon": "$(gear)"
+      }
+    ],
+    "menus": {
+      "commandPalette": [
+        {
+          "command": "fcc.agent.launch",
+          "when": "false"
+        },
+        {
+          "command": "fcc.models.copy",
+          "when": "false"
+        },
+        {
+          "command": "fcc.provider.openKeyPage",
+          "when": "false"
+        },
+        {
+          "command": "fcc.provider.copyModel",
+          "when": "false"
+        },
+        {
+          "command": "fcc.provider.pick",
+          "when": "false"
+        },
+        {
+          "command": "fcc.integration.installExtension",
+          "when": "false"
+        }
+      ],
+      "view/title": [
+        {
+          "command": "fcc.server.start",
+          "when": "view == fcc.status && fcc.serverState == stopped",
+          "group": "navigation@1"
+        },
+        {
+          "command": "fcc.server.restart",
+          "when": "view == fcc.status && fcc.serverState != stopped",
+          "group": "navigation@1"
+        },
+        {
+          "command": "fcc.server.openAdmin",
+          "when": "view == fcc.status",
+          "group": "navigation@2"
+        },
+        {
+          "command": "fcc.refresh",
+          "when": "view == fcc.status",
+          "group": "navigation@3"
+        },
+        {
+          "command": "fcc.agent.pick",
+          "when": "view == fcc.agents",
+          "group": "navigation@1"
+        },
+        {
+          "command": "fcc.models.pick",
+          "when": "view == fcc.models",
+          "group": "navigation@1"
+        },
+        {
+          "command": "fcc.models.refresh",
+          "when": "view == fcc.models",
+          "group": "navigation@2"
+        },
+        {
+          "command": "fcc.provider.search",
+          "when": "view == fcc.providers",
+          "group": "navigation@1"
+        },
+        {
+          "command": "fcc.provider.setCredential",
+          "when": "view == fcc.providers",
+          "group": "navigation@2"
+        },
+        {
+          "command": "fcc.doctor",
+          "when": "view == fcc.maintenance",
+          "group": "navigation@1"
+        }
+      ],
+      "view/item/context": [
+        {
+          "command": "fcc.models.copy",
+          "when": "viewItem == model",
+          "group": "inline"
+        },
+        {
+          "command": "fcc.provider.openKeyPage",
+          "when": "viewItem == provider",
+          "group": "inline@1"
+        },
+        {
+          "command": "fcc.provider.setCredential",
+          "when": "viewItem == provider",
+          "group": "inline@2"
+        },
+        {
+          "command": "fcc.provider.copyModel",
+          "when": "viewItem == provider",
+          "group": "navigation@1"
+        },
+        {
+          "command": "fcc.provider.clearCredential",
+          "when": "viewItem == provider",
+          "group": "navigation@2"
+        },
+        {
+          "command": "fcc.agent.launch",
+          "when": "viewItem == agent",
+          "group": "inline"
+        },
+        {
+          "command": "fcc.integration.installExtension",
+          "when": "viewItem == integration-install",
+          "group": "inline"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "Free Claude Code",
+      "properties": {
+        "fcc.server.command": {
+          "type": "string",
+          "default": "fcc-server",
+          "markdownDescription": "Command used to start the FCC proxy. Use `uv run fcc-server` (with `fcc.server.cwd` set to a checkout) when running from source."
+        },
+        "fcc.server.cwd": {
+          "type": "string",
+          "default": "",
+          "markdownDescription": "Working directory for the server process. Empty = your home directory."
+        },
+        "fcc.server.extraArgs": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "default": [],
+          "markdownDescription": "Extra arguments appended to the server command."
+        },
+        "fcc.server.runIn": {
+          "type": "string",
+          "enum": [
+            "background",
+            "terminal"
+          ],
+          "default": "background",
+          "markdownDescription": "`background`: managed child process with logs in the **Free Claude Code** output channel and automatic port detection. `terminal`: runs in a VS Code terminal (the upstream docs say to keep the terminal open)."
+        },
+        "fcc.server.host": {
+          "type": "string",
+          "default": "127.0.0.1",
+          "markdownDescription": "Host the extension connects to. If you set it explicitly it is also passed to the server as `HOST` when started from VS Code."
+        },
+        "fcc.server.port": {
+          "type": "number",
+          "default": 8082,
+          "markdownDescription": "Port the extension connects to (FCC default is `8082`). If you set it explicitly it is also passed to the server as `PORT` when started from VS Code. When the extension starts the server it auto-detects the port from the startup log."
+        },
+        "fcc.server.readFccEnvFile": {
+          "type": "boolean",
+          "default": true,
+          "markdownDescription": "Best effort: read `PORT`, `HOST` and `ANTHROPIC_AUTH_TOKEN` from `~/.fcc/.env` (or `~/.config/free-claude-code/.env`) when they are not set in VS Code. Silently ignored if the files do not exist."
+        },
+        "fcc.server.autoStart": {
+          "type": "boolean",
+          "default": false,
+          "description": "Start the FCC server automatically when VS Code starts (if it is not already running)."
+        },
+        "fcc.server.stopOnExit": {
+          "type": "boolean",
+          "default": true,
+          "description": "Stop the server on VS Code exit if the extension started it."
+        },
+        "fcc.server.startTimeoutSeconds": {
+          "type": "number",
+          "default": 90,
+          "minimum": 5,
+          "description": "How long to wait for the server to become healthy after starting it."
+        },
+        "fcc.server.healthCheckIntervalSeconds": {
+          "type": "number",
+          "default": 10,
+          "minimum": 2,
+          "description": "How often to poll the server (GET /v1/models)."
+        },
+        "fcc.server.env": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "default": {},
+          "markdownDescription": "Extra environment variables passed to the server when started from VS Code (for example `MODEL`, `MODEL_OPUS`, `LM_STUDIO_BASE_URL`). Do not put API keys here: use **FCC: Store Provider Credential Securely**. Values saved in the FCC Admin UI may take precedence, so the Admin UI stays the authoritative editor."
+        },
+        "fcc.auth.injectIntoServer": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Also pass the stored proxy auth token to the server as `ANTHROPIC_AUTH_TOKEN` when starting it from VS Code."
+        },
+        "fcc.adminUi.path": {
+          "type": "string",
+          "default": "/admin",
+          "description": "Path of the FCC Admin UI."
+        },
+        "fcc.adminUi.openIn": {
+          "type": "string",
+          "enum": [
+            "simpleBrowser",
+            "externalBrowser"
+          ],
+          "default": "externalBrowser",
+          "description": "Where to open the Admin UI."
+        },
+        "fcc.agents.commands": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "default": {},
+          "markdownDescription": "Override launcher commands by agent id: `claude`, `codex`, `pi`, `opencode`, `cline`, `hermes`, `dsh`, `grok`, `muse`, `aider`. Example: `{ \"claude\": \"uv run fcc-claude\" }`."
+        },
+        "fcc.agents.extraArgs": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "default": {},
+          "markdownDescription": "Extra CLI arguments by agent id. Example: `{ \"aider\": [\"--no-auto-commits\"] }`."
+        },
+        "fcc.agents.workingDirectory": {
+          "type": "string",
+          "enum": [
+            "workspace",
+            "activeFile",
+            "prompt",
+            "home"
+          ],
+          "default": "workspace",
+          "description": "Working directory for launched agents."
+        },
+        "fcc.agents.terminalLocation": {
+          "type": "string",
+          "enum": [
+            "panel",
+            "editor"
+          ],
+          "default": "panel",
+          "description": "Open agent terminals in the bottom panel or as editor tabs."
+        },
+        "fcc.terminal.injectEnv": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Add `ANTHROPIC_BASE_URL` and `ANTHROPIC_AUTH_TOKEN` to every new integrated terminal so any Anthropic-compatible client talks to FCC. Off by default because it breaks `claude` when the proxy is down."
+        },
+        "fcc.claudeCode.settingsScope": {
+          "type": "string",
+          "enum": [
+            "user",
+            "workspace"
+          ],
+          "default": "user",
+          "description": "Where 'Point Claude Code for VS Code at FCC' writes claudeCode.environmentVariables."
+        },
+        "fcc.statusBar.enabled": {
+          "type": "boolean",
+          "default": true,
+          "description": "Show the FCC status bar item."
+        },
+        "fcc.statusBar.alignment": {
+          "type": "string",
+          "enum": [
+            "left",
+            "right"
+          ],
+          "default": "right",
+          "description": "Status bar alignment."
+        },
+        "fcc.install.voiceLocal": {
+          "type": "boolean",
+          "default": false,
+          "markdownDescription": "Add the local Whisper option (`--voice-local` / `-VoiceLocal`) when running the installer or updater from VS Code."
+        },
+        "fcc.install.torchBackend": {
+          "type": "string",
+          "enum": [
+            "",
+            "cu130"
+          ],
+          "default": "",
+          "markdownDescription": "Optional `--torch-backend` / `-TorchBackend` value for local Whisper (for example `cu130` for CUDA 13.0)."
+        },
+        "fcc.update.checkOnStartup": {
+          "type": "boolean",
+          "default": false,
+          "description": "Check GitHub for a newer FCC release on startup and notify (no automatic install)."
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package --no-dependencies --allow-missing-repository"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "@types/vscode": "^1.85.0",
+    "@vscode/vsce": "^4.0.0",
+    "typescript": "^7.0.2"
+  },
+  "overrides": {
+    "@azure/msal-node": "^7.1.1"
+  },
+  "allowScripts": {
+    "@vscode/vsce-sign": false
+  }
+}

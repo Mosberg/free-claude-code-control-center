@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+  <defs>
+    <linearGradient id="grad-maint" x1="16" y1="16" x2="114" y2="112" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#3b82f6"/>
+      <stop offset="50%" stop-color="#06b6d4"/>
+      <stop offset="100%" stop-color="#34d399"/>
+    </linearGradient>
+    <filter id="glow-maint" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3.5" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  <g filter="url(#glow-maint)" stroke="url(#grad-maint)" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Cogwheel Base Settings / Core Engine -->
+    <path d="M42 34 L45 37 M57 37 L60 34 M65 42 L69 43 M65 55 L69 54 M60 62 L57 59 M45 59 L42 62 M35 55 L31 56 M35 43 L31 42" stroke-width="3.5" />
+    <circle cx="51" cy="48" r="16" stroke-width="3" />
+    <circle cx="51" cy="48" r="7" stroke-width="2.5" />
+
+    <!-- Upward Update / Install Speed Arrow -->
+    <path d="M84 18 L100 36 H90 V68 H78 V36 H68 Z" stroke-width="3" stroke="#34d399" />
+
+    <!-- Help / Support Question Dialog -->
+    <path d="M72 80 C72 73 78 67 86 67 C94 67 100 73 100 80 C100 85 96 89 92 92 L95 103 L84 97 C81 98 78 98 76 97" stroke-width="2.8" />
+    <!-- Question Mark -->
+    <path d="M83 75 C83 73 85 71 88 71 C90 71 92 73 92 75 C92 78 88 79 88 82" stroke-width="2.5" stroke="#38bdf8" />
+    <circle cx="88" cy="88" r="1.5" fill="#38bdf8" />
+
+    <!-- Lower Gear Accent Teeth -->
+    <path d="M30 74 C26 79 26 87 31 92 L34 90 C34 96 38 101 44 102 L44 98 C50 101 57 101 62 97" stroke-width="2.8" />
+  </g>
+</svg>
